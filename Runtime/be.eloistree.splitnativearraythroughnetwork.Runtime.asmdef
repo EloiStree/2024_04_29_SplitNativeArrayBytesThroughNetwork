@@ -1,0 +1,16 @@
+{
+    "name": "be.eloistree.splitnativearraythroughnetwork",
+    "rootNamespace": "",
+    "references": [
+        "be.eloistree.watchexecutetim"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

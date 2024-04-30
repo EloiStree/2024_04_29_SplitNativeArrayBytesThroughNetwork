@@ -1,0 +1,23 @@
+
+{                                                                                
+  "name": "be.eloistree.splitnativearraythroughnetwork",                              
+  "displayName": "Split Native Array to bytes through network",                        
+  "version": "0.0.1",                         
+  "unity": "2018.1",                             
+  "unityRelease": "",                             
+  "description": "Tool to split and native array to chunk through the network.",                         
+  "keywords": ["Script","Tool"],                       
+  "dependencies":{},     
+  "relatedPackages":{},     
+  "samples" : [],     
+  "author" : {
+"name":"",
+"mail":"",
+"url":""},     
+  "repository":{
+"type":"Git",
+"url":"https://github.com/EloiStree/2024_04_29_SplitNativeArrayBytesThroughNetwork.git",
+"footprint":"",
+"revision":""},     
+  "category": "Script"                   
+} 
