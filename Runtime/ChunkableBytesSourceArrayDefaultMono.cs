@@ -2,13 +2,15 @@
 using Unity.Collections;
 using UnityEngine;
 
+
+
 public class ChunkableBytesSourceArrayDefaultMono: AbstractByteArrayReferenceSetGetMono
 {
     public int m_elementByteSize = 11;
     public int m_elementMaxWantedInByteArray = 128 * 128;
 
-
     string m_storeGuid = "";
+
     public void Awake() {
 
         CheckExistance();
@@ -27,7 +29,7 @@ public class ChunkableBytesSourceArrayDefaultMono: AbstractByteArrayReferenceSet
         StaticByteArrayToChunkDicoStored.GetDictionary().Add(m_storeGuid, new byte[m_elementByteSize * m_elementMaxWantedInByteArray]);
     }
 
-    public override int SizeOfElementInByteStored()
+    public override int GetSizeOfElementInByteStored()
     {
         CheckExistance();
         return m_elementByteSize;
@@ -35,7 +37,7 @@ public class ChunkableBytesSourceArrayDefaultMono: AbstractByteArrayReferenceSet
 
     
 
-    public override int HowManyElementMaxAreStoreInCurrentArray()
+    public override int GetHowManyElementMaxAreStoreInCurrentArray()
     {
         CheckExistance();
         return m_elementMaxWantedInByteArray;

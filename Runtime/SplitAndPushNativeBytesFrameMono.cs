@@ -69,9 +69,9 @@ public class SplitAndPushNativeBytesFrameMono
     {
         m_elementSendPerChunk = m_elementSendPerPackage ;
         //FRAME INDEX    ,  CHUNK INDEX, Block TIME A UTC NOW, Chunk TIME A UTC NOW
-        m_bytePerChunkWithoutStart =  (m_elementSendPerChunk * m_source.SizeOfElementInByteStored());
+        m_bytePerChunkWithoutStart =  (m_elementSendPerChunk * m_source.GetSizeOfElementInByteStored());
         m_bytePerChunkWithStart = m_chunkStartByteSize + m_bytePerChunkWithoutStart;
-        m_chunkToSend = m_source.HowManyElementMaxAreStoreInCurrentArray() / m_elementSendPerChunk;
+        m_chunkToSend = m_source.GetHowManyElementMaxAreStoreInCurrentArray() / m_elementSendPerChunk;
     }
 
 
@@ -149,7 +149,7 @@ public class SplitAndPushNativeBytesFrameMono
             m_elementsSentInChunks += m_elementSendPerChunk;
             if (m_elementsSentInChunks >= m_currentElementsInUseInGame)
                 break;
-            if (m_elementsSentInChunks >= m_source.HowManyElementMaxAreStoreInCurrentArray())
+            if (m_elementsSentInChunks >= m_source.GetHowManyElementMaxAreStoreInCurrentArray())
                 break;
         }
         m_pushFrame.StopCounting();

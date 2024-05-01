@@ -6,8 +6,8 @@ public abstract class AbstractByteArrayReferenceGetMono : MonoBehaviour, IChunka
 {
     public abstract byte[] GetBytesArray();
     public abstract int GetBytesArrayLenght();
-    public abstract int SizeOfElementInByteStored();
-    public abstract int HowManyElementMaxAreStoreInCurrentArray();
+    public abstract int GetSizeOfElementInByteStored();
+    public abstract int GetHowManyElementMaxAreStoreInCurrentArray();
 }
 
 

@@ -2,7 +2,7 @@
 
 public class ChunkableBytesSourceArrayDefaultMbpsMon : MonoBehaviour {
 
-    public ChunkableBytesSourceArrayDefaultMono m_source;
+    public AbstractByteArrayReferenceSetGetMono m_source;
     
 
     [Header("Debug estimation")]
@@ -26,7 +26,7 @@ public class ChunkableBytesSourceArrayDefaultMbpsMon : MonoBehaviour {
 
     public void Reset()
     {
-        m_source = GetComponent<ChunkableBytesSourceArrayDefaultMono>();
+        m_source = GetComponent<AbstractByteArrayReferenceSetGetMono>();
     }
 
 
@@ -34,7 +34,7 @@ public class ChunkableBytesSourceArrayDefaultMbpsMon : MonoBehaviour {
     {
         if (m_source == null)
             return;
-        m_arraySizeInByte = m_source. m_elementByteSize * m_source.m_elementMaxWantedInByteArray;
+        m_arraySizeInByte = m_source.GetSizeOfElementInByteStored() * m_source.GetHowManyElementMaxAreStoreInCurrentArray();
         m_arraySizeInKiloBytes = m_arraySizeInByte / 1024;
         m_arraySizeInMegaByte = m_arraySizeInKiloBytes / 1024;
         m_arraySizeInBits = m_arraySizeInByte * 8;

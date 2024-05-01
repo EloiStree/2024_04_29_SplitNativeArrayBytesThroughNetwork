@@ -2,6 +2,6 @@
 {
     byte[] GetBytesArray();
     int GetBytesArrayLenght();
-    int HowManyElementMaxAreStoreInCurrentArray();
-    int SizeOfElementInByteStored();
+    int GetHowManyElementMaxAreStoreInCurrentArray();
+    int GetSizeOfElementInByteStored();
 }
