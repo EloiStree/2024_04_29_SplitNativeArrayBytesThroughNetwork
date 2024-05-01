@@ -418,8 +418,6 @@ MonoBehaviour:
     m_arrayReference: {fileID: 131201867}
   - m_arrayByteId: 2
     m_arrayReference: {fileID: 1041300833}
-  - m_arrayByteId: 3
-    m_arrayReference: {fileID: 0}
 --- !u!4 &2046621280
 Transform:
   m_ObjectHideFlags: 0

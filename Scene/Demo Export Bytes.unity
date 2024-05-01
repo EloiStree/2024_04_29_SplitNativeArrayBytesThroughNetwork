@@ -396,6 +396,76 @@ PrefabInstance:
       propertyPath: m_Name
       value: Push Example Shield drone
       objectReference: {fileID: 0}
+    - target: {fileID: 6055066878183521768, guid: ac417a0dc6ff56d4a883e45cc11f3b56,
+        type: 3}
+      propertyPath: m_frameRate
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6055066878183521768, guid: ac417a0dc6ff56d4a883e45cc11f3b56,
+        type: 3}
+      propertyPath: m_arraySizeInBits
+      value: 1966080
+      objectReference: {fileID: 0}
+    - target: {fileID: 6055066878183521768, guid: ac417a0dc6ff56d4a883e45cc11f3b56,
+        type: 3}
+      propertyPath: m_arraySizeInByte
+      value: 245760
+      objectReference: {fileID: 0}
+    - target: {fileID: 6055066878183521768, guid: ac417a0dc6ff56d4a883e45cc11f3b56,
+        type: 3}
+      propertyPath: m_arraySizeInKiloBits
+      value: 1920
+      objectReference: {fileID: 0}
+    - target: {fileID: 6055066878183521768, guid: ac417a0dc6ff56d4a883e45cc11f3b56,
+        type: 3}
+      propertyPath: m_arraySizeInMegaBits
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6055066878183521768, guid: ac417a0dc6ff56d4a883e45cc11f3b56,
+        type: 3}
+      propertyPath: m_arraySizeInKiloBytes
+      value: 240
+      objectReference: {fileID: 0}
+    - target: {fileID: 6055066878183521768, guid: ac417a0dc6ff56d4a883e45cc11f3b56,
+        type: 3}
+      propertyPath: m_arraySizeInBitsPerSecond
+      value: 7864320
+      objectReference: {fileID: 0}
+    - target: {fileID: 6055066878183521768, guid: ac417a0dc6ff56d4a883e45cc11f3b56,
+        type: 3}
+      propertyPath: m_arraySizeInBytePerSecond
+      value: 983040
+      objectReference: {fileID: 0}
+    - target: {fileID: 6055066878183521768, guid: ac417a0dc6ff56d4a883e45cc11f3b56,
+        type: 3}
+      propertyPath: m_arraySizeInKiloBitsPerSecond
+      value: 7680
+      objectReference: {fileID: 0}
+    - target: {fileID: 6055066878183521768, guid: ac417a0dc6ff56d4a883e45cc11f3b56,
+        type: 3}
+      propertyPath: m_arraySizeInMegaBitsPerSecond
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6055066878183521768, guid: ac417a0dc6ff56d4a883e45cc11f3b56,
+        type: 3}
+      propertyPath: m_arraySizeInMegaBytePerSecond
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6055066878183521768, guid: ac417a0dc6ff56d4a883e45cc11f3b56,
+        type: 3}
+      propertyPath: m_arraySizeInKiloBytesPerSecond
+      value: 960
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915966905070578628, guid: ac417a0dc6ff56d4a883e45cc11f3b56,
+        type: 3}
+      propertyPath: m_elementByteSize
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915966905070578628, guid: ac417a0dc6ff56d4a883e45cc11f3b56,
+        type: 3}
+      propertyPath: m_elementMaxWantedInByteArray
+      value: 16384
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
