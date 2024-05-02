@@ -2,7 +2,8 @@
     "name": "be.eloistree.splitnativebytethroughnetwork",
     "rootNamespace": "",
     "references": [
-        "GUID:016d8f0c084de8f47aab6568bc77c8e9"
+        "GUID:016d8f0c084de8f47aab6568bc77c8e9",
+        "GUID:2665a8d13d1b3f18800f46e256720795"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
