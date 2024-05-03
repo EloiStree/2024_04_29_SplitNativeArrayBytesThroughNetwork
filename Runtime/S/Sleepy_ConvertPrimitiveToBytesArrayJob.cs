@@ -10,35 +10,26 @@ public class Sleepy_ConvertPrimitiveToBytesArray : MonoBehaviour
 }
 
 
-public interface I_GenericBiDirectionalParseByte<T> where T : struct
+public interface I_GenericBiDirectionalParseByteInArray<T> where T : struct
 {
 
     public void ParseToBytes(ref byte[] targetArray, in int elementIndex, in T toSet);
-    public void ParseToBytes(NativeArray<byte> targetArray, in int elementIndex, in T toSet);
-    public void ParseToBytesForJob(NativeArray<byte> targetArray, int elementIndex, T toSet);
     public void ParseFromBytes(in byte[] targetArray, in int elementIndex, out T toSet);
     public int GetElementBytesSize();
 
 }
 
-public abstract class A_GenericBiDirectionalParseByte<T> : I_GenericBiDirectionalParseByte<T> where T : struct
+public abstract class A_GenericBiDirectionalParseByteInArray<T> : I_GenericBiDirectionalParseByteInArray<T> where T : struct
 {
     public abstract void ParseFromBytes(in byte[] targetArray, in int elementIndex, out T toSet);
     public abstract void ParseToBytes(ref byte[] targetArray, in int elementIndex, in T toSet);
-    public abstract void ParseToBytes(NativeArray<byte> targetArray, in int elementIndex, in T toSet);
-    public  void ParseToBytesForJob(NativeArray<byte> targetArray, int elementIndex, T toSet) {
-        ParseToBytes(targetArray, in elementIndex, in toSet);
-    }
-
     public abstract int GetElementBytesSize();
-
     public void GetOffsetInArray(in int index, out int offset) => offset = index * GetElementBytesSize();
     public void GetArrayBytesCountFor(in int numberOfElements, out int arraySizeInBytes) => arraySizeInBytes = numberOfElements * GetElementBytesSize();
 
 }
 
-
-public class DemoGenericBiDirectionalParseByte : A_GenericBiDirectionalParseByte<PrimitiveStructToParseSample>
+public class DemoPriStructParserArray : A_GenericBiDirectionalParseByteInArray<PrimitiveStructToParseSample>
 {
     public override void ParseToBytes(ref byte[] targetArray, in int elementIndex, in PrimitiveStructToParseSample toSet)
     {
@@ -54,32 +45,8 @@ public class DemoGenericBiDirectionalParseByte : A_GenericBiDirectionalParseByte
         BitConverter.GetBytes(toSet.m_float).CopyTo(targetArray, offset + 30);
         BitConverter.GetBytes(toSet.m_double).CopyTo(targetArray, offset + 34);
         targetArray[offset+42] = (byte)toSet.m_char0;
-        targetArray[offset + 43] = (byte)toSet.m_char1;
+        targetArray[offset+43] = (byte)toSet.m_char1;
     }
-
-    public override void ParseToBytes( NativeArray<byte> targetNativeArray, in int elementIndex, in PrimitiveStructToParseSample toSet)
-    {
-        //byte[] targetArray = new byte[44];
-        //int offset = GetElementBytesSize() * elementIndex;
-        //targetArray[0] = toSet.m_byte;
-        //targetArray[1] = (byte)toSet.m_sbyte;
-        ////BitConverter.GetBytes(toSet.m_int).CopyTo(targetArray,  2);
-        ////BitConverter.GetBytes(toSet.m_uint).CopyTo(targetArray,  6);
-        ////BitConverter.GetBytes(toSet.m_long).CopyTo(targetArray,   10);
-        ////BitConverter.GetBytes(toSet.m_ulong).CopyTo(targetArray,   18);
-        ////BitConverter.GetBytes(toSet.m_short).CopyTo(targetArray,   26);
-        ////BitConverter.GetBytes(toSet.m_ushort).CopyTo(targetArray,   28);
-        ////BitConverter.GetBytes(toSet.m_float).CopyTo(targetArray,   30);
-        ////BitConverter.GetBytes(toSet.m_double).CopyTo(targetArray,   34);
-        //targetArray[42] = (byte)toSet.m_char0;
-        //targetArray[43] = (byte)toSet.m_char1;
-
-        ////for (int i = 0; i < 44; i++)
-        ////{
-        ////    targetNativeArray[offset + i] = targetArray[i];
-        ////}
-    }
-
     public override void ParseFromBytes(in byte[] targetArray, in int elementIndex, out PrimitiveStructToParseSample toSet)
     {
         toSet = new PrimitiveStructToParseSample();
@@ -97,14 +64,10 @@ public class DemoGenericBiDirectionalParseByte : A_GenericBiDirectionalParseByte
         toSet.m_char0 = (char)targetArray[offset + 42];
         toSet.m_char1 = (char)targetArray[offset + 43];
     }
-  
-
     public override int GetElementBytesSize()
     {
         return 44;
     }
-
-  
 }
 
 
