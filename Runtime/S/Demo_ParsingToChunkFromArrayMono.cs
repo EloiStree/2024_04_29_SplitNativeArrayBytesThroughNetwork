@@ -183,6 +183,33 @@ public struct STRUCTJOB_ParseGenericStructToBytes<T, J> : IJobParallelFor where 
 }
 
 [BurstCompile]
+public struct STRUCTJOB_ParseGenericBytesToStruct<T, J> : IJobParallelFor where T : struct where J : struct, I_HowToParseByteNativeArrayToElement<T>, I_ProvideRandomAndDefaultElementInJob<T>
+{
+    [ReadOnly]
+    [NativeDisableParallelForRestriction]
+    public NativeArray<byte> m_toCopyInBytes;
+
+    [WriteOnly]
+    public NativeArray<T> m_toCopyStruct;
+
+    public int m_maxElement;
+    public J m_parser;
+    public T m_default;
+
+    public void Execute(int index)
+    {
+        if (index < m_maxElement)
+        {
+            m_parser.ParseBytesToElement(m_toCopyInBytes, index, out T v);
+            m_toCopyStruct[index] = v;
+        }
+        else {
+            m_toCopyStruct[index] = m_default;
+        }
+    }
+}
+
+[BurstCompile]
 public struct STRUCTJOB_SetRandomValueInNativeArray<T, J> : IJobParallelFor where T : struct where J : struct, I_ProvideRandomAndDefaultElementInJob<T>
 {
     public NativeArray<T> m_toRandomized;
@@ -218,10 +245,10 @@ public struct STRUCTJOB_SetRandomValueInNativeArray<T, J> : IJobParallelFor wher
 
 
 
-
-
 [System.Serializable]
-public class TDD_HoldBytesForChunkGenericElement <T,J,D> : MonoBehaviour where T: struct where J : struct, I_HowToParseElementInByteNativeArray<T> where D:struct, I_ProvideRandomAndDefaultElementInJob<T> {
+public class TDD_HoldBytesForChunkGenericElement <T,J,D> : 
+    MonoBehaviour where T: struct where J : struct, I_HowToParseElementInByteNativeArray<T>
+    where D:struct, I_ProvideRandomAndDefaultElementInJob<T> {
 
     public int m_elementPerChunk = 512;
     public int m_elementMaxInArray=128*128;
@@ -240,8 +267,13 @@ public class TDD_HoldBytesForChunkGenericElement <T,J,D> : MonoBehaviour where T
         Refresh();
     }
 
-    public void PushIn(NativeArray<T> array) {
+    public void SetWithJob(NativeArray<T> array)
+    {
 
+        m_holder.SetWithJob(array);
+    }
+    public void SetWithJob(T[] array)
+    {
         m_holder.SetWithJob(array);
     }
 
@@ -255,6 +287,7 @@ public class TDD_HoldBytesForChunkGenericElement <T,J,D> : MonoBehaviour where T
     public void PushChunksAsBytesRef()
     {
 
+        
         for (int i = m_holder.m_groupOfChunkArray.Count-1; i >=0; i--)
         {
             m_onPushAllChunkAsBytesRef.Invoke(m_holder.m_groupOfChunkArray[i].m_chunkArray);
@@ -270,20 +303,23 @@ public class TDD_HoldBytesForChunkGenericElement <T,J,D> : MonoBehaviour where T
             m_onPushAllChunkAsBytesRef.Invoke(m_holder.m_groupOfChunkArray[i].m_chunkArray.ToArray());
         }
         m_onPushFullByteArrayRef.Invoke(m_holder.m_fullByteArray.ToArray());
+
     }
 
-    public void RandomizeArrayWithForLoop() {
+    [ContextMenu("Refresh Chunk from byte array")]
+    public void RefreshChunksFromFullByteArray() {
+        m_holder.RefreshChunksFromFullByteArray();
+    }
 
+    public void RandomizeArrayWithForLoop()
+    {
         for (int i = 0; i < m_arrayIn.Length; i++)
         {
             m_randomizer.GetRandom(out m_arrayIn[i]);
         }
 
-        m_nativeArrayIn = new NativeArray<T>(m_arrayIn, Allocator.TempJob);
-
-        m_holder.SetWithJob(m_nativeArrayIn);
+        m_holder.SetWithJob(m_arrayIn);
         m_holder.RefreshChunksFromFullByteArray();
-        m_nativeArrayIn.Dispose();
     }
 
     public void Refresh()
@@ -305,8 +341,11 @@ public class HoldBytesForChunkGenericElement <T,J> where T: struct where J : str
 
     private static J m_structParser = new();
 
+
+
     public void SetWithJob(NativeArray<T> elements)
     {
+       
 
         STRUCTJOB_ParseGenericStructToBytes<T, J> job = new STRUCTJOB_ParseGenericStructToBytes<T, J>()
         {
@@ -315,23 +354,19 @@ public class HoldBytesForChunkGenericElement <T,J> where T: struct where J : str
             m_maxElement = m_elementTotaleInCollection,
             m_parser = m_structParser,
         };
-        job.Schedule(elements.Length, 64).Complete();
+        JobHandle handle =  job.Schedule(elements.Length, 64);
+
+        
+        handle.Complete();
+       
         AddChunkFrame();
     }
     public void SetWithJob(T[] elements)
     {
-        NativeArray<T> temp = new NativeArray<T>(elements.Length, Allocator.TempJob);
-        temp.CopyFrom(elements);
-        STRUCTJOB_ParseGenericStructToBytes<T,J> job = new STRUCTJOB_ParseGenericStructToBytes<T,J>()
-        {
-            m_toCopyStruct = temp,
-            m_toCopyInBytes = m_byteNativeArray,
-            m_maxElement = m_elementTotaleInCollection,
-            m_parser = m_structParser,
-        };
-        job.Schedule(elements.Length, 64).Complete();
+
+        NativeArray<T> temp = new NativeArray<T>(elements, Allocator.TempJob);
+        SetWithJob(temp);
         temp.Dispose();
-        AddChunkFrame();
     }
 
 
@@ -366,7 +401,11 @@ public class HoldBytesForChunkGenericElement <T,J> where T: struct where J : str
         m_elementTotaleInCollection = numberOfElementTotaleInCollection;
         m_elementByteSize = m_structParser.GetSizeOfElementInBytesCount();
 
-        m_numberOfChunk = 1 + ( m_elementTotaleInCollection / m_elementInChunk);
+        bool isModuloZero = (m_elementTotaleInCollection % m_elementInChunk) == 0;
+        int c = m_elementTotaleInCollection / m_elementInChunk;
+        if (!isModuloZero)
+            c +=1;
+        m_numberOfChunk = c;
         m_chunkByteSize = m_elementByteSize * m_elementInChunk;
         m_allChunkByteSize = m_chunkByteSize * m_numberOfChunk;
         m_percentOfUdpFullPackage = m_chunkByteSize / (float) (65536 - 17);
@@ -532,5 +571,20 @@ public struct ChunkByteArrayWithReconstructionId
     {
         framedId = (uint)((chunkWithHeadRecevied[4] << 24) | (chunkWithHeadRecevied[3] << 16) | (chunkWithHeadRecevied[2] << 8) | chunkWithHeadRecevied[1]);
         
+    }
+
+    public static void GetMaxSizeOfArrayForChunk(byte[] chunkWithHeadRecevied, out bool found,out  uint maxSize)
+    {
+        if (chunkWithHeadRecevied == null || chunkWithHeadRecevied.Length < 21) {
+            found = false;
+            maxSize = 0;
+            return;
+        }
+        else
+        {
+           found = true;
+           maxSize = (uint)((chunkWithHeadRecevied[20] << 24) | (chunkWithHeadRecevied[19] << 16) | (chunkWithHeadRecevied[18] << 8) | chunkWithHeadRecevied[17]);
+
+        }
     }
 }

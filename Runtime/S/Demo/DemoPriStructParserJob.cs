@@ -49,10 +49,20 @@ public struct DemoPriStructParserJob : I_HowToParseElementInByteNativeArray<Prim
 
 
 
-public struct StructParserJob_Integer : I_HowToParseElementInByteNativeArray<int>, I_HowToParseByteNativeArrayToElement<int>
+public struct StructParserJob_Integer : I_HowToParseElementInByteNativeArray<int>, I_HowToParseByteNativeArrayToElement<int>, I_ProvideRandomAndDefaultElementInJob<int>
 {
     public static int m_elementSize = 4;
     public bool m_useBitConverterForTheTest;
+
+    public void GetDefault(out int element)
+    {
+        element = 0;
+    }
+
+    public void GetRandom(out int element)
+    {
+        element = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+    }
 
     public int GetSizeOfElementInBytesCount()
     {
@@ -73,12 +83,28 @@ public struct StructParserJob_Integer : I_HowToParseElementInByteNativeArray<int
         int offset = m_elementSize * indexElement;
         element = (source[offset + 3] << 24) | (source[offset + 2] << 16) | (source[offset + 1] << 8) | source[offset + 0];
     }
+
+    public void SetWithDefault(NativeArray<int> source, in int indexElement)
+    {
+        GetDefault(out int value);
+        source[indexElement] = value;
+    }
+
+    public void SetWithRandom(NativeArray<int> source, in int indexElement)
+    {
+        GetRandom(out int value);
+        source[indexElement] = value;
+    }
 }
 
-public struct StructParserJob_Vector3 : I_HowToParseElementInByteNativeArray<Vector3>, I_HowToParseByteNativeArrayToElement<Vector3>
+public struct StructParserJob_Vector3 : I_HowToParseElementInByteNativeArray<Vector3>, I_HowToParseByteNativeArrayToElement<Vector3>, I_ProvideRandomAndDefaultElementInJob<Vector3>
 {
     public static int m_elementSize = 12;
     public bool m_useBitConverterForTheTest;
+
+    public Vector3 m_default;
+  
+
     public int GetSizeOfElementInBytesCount()
     {
         return m_elementSize;
@@ -125,6 +151,32 @@ public struct StructParserJob_Vector3 : I_HowToParseElementInByteNativeArray<Vec
         b4[2] = source[offset + 10];
         b4[3] = source[offset + 11];
         element.z = BitConverter.ToSingle(b4, 0);
+    }
+    public void GetDefault(out Vector3 element)
+    {
+        element = m_default;
+    }
+
+    public void GetRandom(out Vector3 element)
+    {
+        element = new Vector3(R(), R(), R());
+    }
+
+    private float R()
+    {
+        return UnityEngine.Random.Range(float.MinValue, float.MaxValue);
+    }
+
+    public void SetWithDefault(NativeArray<Vector3> source, in int indexElement)
+    {
+        GetDefault(out Vector3 value);
+        source[indexElement] = value;
+    }
+
+    public void SetWithRandom(NativeArray<Vector3> source, in int indexElement)
+    {
+        GetRandom(out Vector3 value);
+        source[indexElement] = value;
     }
 }
 

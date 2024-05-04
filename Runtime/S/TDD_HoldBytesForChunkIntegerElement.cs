@@ -1,4 +1,5 @@
-﻿using Unity.Collections;
+﻿using System.Collections;
+using Unity.Collections;
 using UnityEngine;
 
 [System.Serializable]
@@ -24,6 +25,22 @@ public class TDD_HoldBytesForChunkIntegerElement : TDD_HoldBytesForChunkGenericE
     {
         base.PushChunksAsBytesCopy();
     }
+
+    [ContextMenu("Push Random With Ref")]
+    public void PushRandomWithRef()
+    {
+
+        base.RandomizeArrayWithForLoop();
+        base.PushChunksAsBytesRef();
+    }
+    [ContextMenu("Push Random With copy")]
+    public void PushRandomWithCopy()
+    {
+
+        base.RandomizeArrayWithForLoop();
+        base.PushChunksAsBytesCopy();
+    }
+
 }
 
 
