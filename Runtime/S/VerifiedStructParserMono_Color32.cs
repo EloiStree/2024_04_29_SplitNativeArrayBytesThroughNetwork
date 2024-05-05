@@ -8,3 +8,6 @@ public class VerifiedStructParserMono_Color32 : VerifiedStructParserMono<Color32
         base.ParseCheck();
     }
 }
+
+
+
