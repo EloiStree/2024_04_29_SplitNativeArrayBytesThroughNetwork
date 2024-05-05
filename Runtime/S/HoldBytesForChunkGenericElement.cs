@@ -11,6 +11,7 @@ public class HoldBytesForChunkGenericElement <T,J> where T: struct where J : str
     private static J m_structParser = new();
 
 
+    public int m_currentFrameId;
 
     public void SetWithJob(NativeArray<T> elements)
     {
@@ -39,7 +40,6 @@ public class HoldBytesForChunkGenericElement <T,J> where T: struct where J : str
     }
 
 
-    public int m_currentFrameId;
 
     public void AddChunkFrame() => SetChunkFrame(m_currentFrameId + 1);
 
