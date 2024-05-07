@@ -69,11 +69,14 @@ public class ReconstructionByteToNativeArray<T, J> : I_HoldNativeArrayReconstruc
             m_default = defaultStruct,
             m_parser = m_structParser,
             m_maxElement = m_elementInMaxByteArrayReceived,
+            m_elementToReconstruct= m_elementToReconstruct,
         };
         job.Schedule(m_elementInMaxByteArrayReceived, 64).Complete();
         m_onComplete.Invoke(m_elements);
     }
     public UnityEvent<NativeArray<T>> m_onComplete= new UnityEvent<NativeArray<T>>();
+    public int m_elementToReconstruct;
+
     public NativeArray<T> GetCurrentNativeArray()
     {
         return m_elements;
@@ -90,6 +93,7 @@ public interface I_HoldNativeArrayReconstructed <T> where T:struct
 public class ReconstructionByteToNativeArrayMono<T,J> : MonoBehaviour, I_HoldNativeArrayReconstructed<T> where T : struct where J : struct, I_HowToParseByteNativeArrayToElement<T>, I_ProvideRandomAndDefaultElementInJob<T>
 {
     public int m_initSize = 128;
+    public int m_elementToReconstruct;
     public ReconstructionByteToNativeArray<T, J> m_reconstructionNativerArray = new ReconstructionByteToNativeArray<T,J>(128);
 
     public NativeArray<T> GetCurrentNativeArray() {
@@ -97,13 +101,14 @@ public class ReconstructionByteToNativeArrayMono<T,J> : MonoBehaviour, I_HoldNat
     }
 
     public void PushIn(NativeArray<byte> value) {
+        m_reconstructionNativerArray.m_elementToReconstruct = m_elementToReconstruct;
         m_reconstructionNativerArray.SetWithJobFromByte(value);
     }
 
     public void PushIn(byte[] value) {
 
         NativeArray<byte> t = new NativeArray<byte>(value, Allocator.TempJob);
-        m_reconstructionNativerArray.SetWithJobFromByte(t);
+        PushIn(t);
         t.Dispose();
     }
 }

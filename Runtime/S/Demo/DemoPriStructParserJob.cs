@@ -45,6 +45,11 @@ public struct DemoPriStructParserJob : I_HowToParseElementInByteNativeArray<Prim
         //DemoGenericBiDirectionalParseByte p = new DemoGenericBiDirectionalParseByte();
         //p.ParseToBytes(source, in indexElement, in element);
     }
+
+    public void ParseBytesToUnusedValue(NativeArray<byte> source, in int indexElement)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 
@@ -82,6 +87,15 @@ public struct StructParserJob_Integer : I_HowToParseElementInByteNativeArray<int
     {
         int offset = m_elementSize * indexElement;
         element = (source[offset + 3] << 24) | (source[offset + 2] << 16) | (source[offset + 1] << 8) | source[offset + 0];
+    }
+
+    public void ParseBytesToUnusedValue(NativeArray<byte> source, in int indexElement)
+    {
+        int offset = m_elementSize * indexElement;
+        source[offset + 0] = 0;
+        source[offset + 1] = 0;
+        source[offset + 2] = 0;
+        source[offset + 3] = 0;
     }
 
     public void SetWithDefault(NativeArray<int> source, in int indexElement)
@@ -177,6 +191,23 @@ public struct StructParserJob_Vector3 : I_HowToParseElementInByteNativeArray<Vec
     {
         GetRandom(out Vector3 value);
         source[indexElement] = value;
+    }
+
+    public void ParseBytesToUnusedValue(NativeArray<byte> source, in int indexElement)
+    {
+        int offset = m_elementSize * indexElement;
+        source[offset + 0] =0;
+        source[offset + 1] =0;
+        source[offset + 2] =0;
+        source[offset + 3] =0;
+        source[offset + 4] =0;
+        source[offset + 5] =0;
+        source[offset + 6] =0;
+        source[offset + 7] =0;
+        source[offset + 8] =0;
+        source[offset + 9] =0;
+        source[offset + 10]=0;
+        source[offset + 11]=0;
     }
 }
 

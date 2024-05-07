@@ -6,6 +6,7 @@
 public interface I_HowToParseElementInByteNativeArray<T>
 {
     void ParseBytesFromElement(NativeArray<byte> source, in int indexElement, in T element);
+    void ParseBytesToUnusedValue(NativeArray<byte> source, in int indexElement);
     int GetSizeOfElementInBytesCount();
 
 }

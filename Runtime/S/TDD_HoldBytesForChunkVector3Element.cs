@@ -120,5 +120,13 @@ public struct StructParserJob_Color32 : I_HowToParseElementInByteNativeArray<Col
         GetRandom(out Color32 value);
         source[indexElement] = value;
     }
+
+    public void ParseBytesToUnusedValue(NativeArray<byte> source, in int indexElement)
+    {
+        int offset = m_elementSize * indexElement;
+        source[offset + 0] = 0;
+        source[offset + 1] = 0;
+        source[offset + 2] = 0;
+    }
 }
 

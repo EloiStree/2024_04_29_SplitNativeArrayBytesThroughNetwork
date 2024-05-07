@@ -13,12 +13,13 @@ public struct STRUCTJOB_ParseGenericBytesToStruct<T, J> : IJobParallelFor where 
     public NativeArray<T> m_toCopyStruct;
 
     public int m_maxElement;
+    public int m_elementToReconstruct;
     public J m_parser;
     public T m_default;
 
     public void Execute(int index)
     {
-        if (index < m_maxElement)
+        if (index < m_maxElement && index < m_elementToReconstruct)
         {
             m_parser.ParseBytesToElement(m_toCopyInBytes, index, out T v);
             m_toCopyStruct[index] = v;

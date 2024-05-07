@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ByteChunkReconstructionManagerMono : MonoBehaviour
 {
@@ -11,8 +12,10 @@ public class ByteChunkReconstructionManagerMono : MonoBehaviour
 
     public byte[] m_chunkLastReceived;
 
+    public UnityEvent<int> m_onNumberOfByteReceived;
+    public UnityEvent<int> m_onNumberOfByteReceivedFilter;
 
-    public ReconstructionFullByteRange m_reconstruction;
+    public StaticDicoStorageReconstructionMono m_reconstructionHolder;
 
     public uint m_lastChunkArrayId;
     public uint m_lastChunkId;
@@ -26,7 +29,11 @@ public class ByteChunkReconstructionManagerMono : MonoBehaviour
 
     private void Awake()
     {
-        foreach (var item in m_reconstruction.m_collectionOfMergeByteArray)
+        m_reconstructionHolder.CreatEmptyIfNotExisting();
+        m_reconstructionHolder.GetValueRef(out bool _, out var reconstruction);
+        reconstruction.m_value = new ReconstructionFullByteRange();
+
+        foreach (var item in reconstruction.m_value.m_collectionOfMergeByteArray)
         {
             item.m_onChangeOfArraySizeEvent += (s,o, n)=>
             {
@@ -59,11 +66,15 @@ public class ByteChunkReconstructionManagerMono : MonoBehaviour
 
     public void PushToParse(byte[] chunkOfBytes) {
 
+        m_onNumberOfByteReceived.Invoke(chunkOfBytes.Length);
+        m_reconstructionHolder.CreatEmptyIfNotExisting();
+        m_reconstructionHolder.GetValueRef(out bool _, out var reconstruction);
         m_chunkLastReceived = chunkOfBytes;
-        m_reconstruction.PushInByteChunk(chunkOfBytes);
+        reconstruction.m_value.PushInByteChunk(chunkOfBytes);
         if (chunkOfBytes != null && chunkOfBytes.Length > 0) {
             if (m_filterChunkByBytes == chunkOfBytes[0]) { 
                 m_chunkLastReceivedFiltered = chunkOfBytes;
+                m_onNumberOfByteReceivedFilter.Invoke(chunkOfBytes.Length);
             }
         }
 
@@ -73,13 +84,20 @@ public class ByteChunkReconstructionManagerMono : MonoBehaviour
 
 
 
-
-
 [System.Serializable]
 public class ReconstructionFullByteRange {
 
     
     public ReconstructBytesArray[] m_collectionOfMergeByteArray = new ReconstructBytesArray[255];
+
+    public ReconstructionFullByteRange() {
+
+        m_collectionOfMergeByteArray = new ReconstructBytesArray[255];
+        for (int i = 0; i < 255; i++)
+        {
+            m_collectionOfMergeByteArray[i] = new ReconstructBytesArray((byte)i,0);
+        }
+    }
 
     public void PushInByteChunk(byte[] receivedRawChunkWithHead)
     {
@@ -99,6 +117,9 @@ public class ReconstructionFullByteRange {
         else
             m_collectionOfMergeByteArray[arrayId].m_arrayIdOfReconstruction = arrayId;
         m_collectionOfMergeByteArray[arrayId].PushInByteChunk(receivedRawChunkWithHead);
+
+       
+
     }
 }
 
@@ -106,9 +127,12 @@ public class ReconstructionFullByteRange {
 public class ReconstructBytesArray {
 
     public byte m_arrayIdOfReconstruction=0;
-    public byte[] m_fullArrayOfMergedChunkContent;
+    public byte[] m_fullArrayOfMergedChunkContent= new byte[0];
     public NativeArray<byte> m_fullArrayAsNativePerma;
     public uint m_lastFrameReceived;
+    public uint m_arrayIdChunkSize;
+    public bool m_previousWasChunkZero;
+
     public Action m_endReceiving;
     public ReconstructBytesArray(byte arrayIdOfReconstruction, int arrayMaxSize) {
         m_arrayIdOfReconstruction = arrayIdOfReconstruction;
@@ -133,10 +157,12 @@ public class ReconstructBytesArray {
     }
 
     public void PushInByteChunk( byte [] receivedRawChunkWithHead) {
+
         if (receivedRawChunkWithHead == null)
             return;
         if (receivedRawChunkWithHead.Length < 21)
             return;
+      
         if (receivedRawChunkWithHead[0] != m_arrayIdOfReconstruction)
             return;
 
@@ -183,6 +209,9 @@ public class ReconstructBytesArray {
         }
         NotifyChunkCopied(arrayId, frameId, chunkId);
 
+        if (m_previousWasChunkZero)
+            m_arrayIdChunkSize = chunkId;
+        m_previousWasChunkZero = chunkId == 0;
     }
 
 
